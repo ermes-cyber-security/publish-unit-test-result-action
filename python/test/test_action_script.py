@@ -952,27 +952,15 @@ class Test(unittest.TestCase):
         self.assertEqual([], gha.method_calls)
 
         self.assertEqual(140, actual.files)
-        if Version(sys.version.split(' ')[0]) >= Version('3.10.0') and sys.platform.startswith('darwin'):
-            # on macOS and Python 3.10 and above we see one particular error
-            self.assertEqual(14, len(actual.errors))
-            self.assertEqual(726, actual.suites)
-            self.assertEqual(4084, actual.suite_tests)
-            self.assertEqual(212, actual.suite_skipped)
-            self.assertEqual(448, actual.suite_failures)
-            self.assertEqual(18, actual.suite_errors)
-            self.assertEqual(7944, actual.suite_time)
-            self.assertEqual(0, len(actual.suite_details))
-            self.assertEqual(4060, len(actual.cases))
-        else:
-            self.assertEqual(10, len(actual.errors))
-            self.assertEqual(730, actual.suites)
-            self.assertEqual(4092, actual.suite_tests)
-            self.assertEqual(212, actual.suite_skipped)
-            self.assertEqual(452, actual.suite_failures)
-            self.assertEqual(18, actual.suite_errors)
-            self.assertEqual(7945, actual.suite_time)
-            self.assertEqual(0, len(actual.suite_details))
-            self.assertEqual(4068, len(actual.cases))
+        self.assertEqual(10, len(actual.errors))
+        self.assertEqual(730, actual.suites)
+        self.assertEqual(4092, actual.suite_tests)
+        self.assertEqual(212, actual.suite_skipped)
+        self.assertEqual(452, actual.suite_failures)
+        self.assertEqual(18, actual.suite_errors)
+        self.assertEqual(7945, actual.suite_time)
+        self.assertEqual(0, len(actual.suite_details))
+        self.assertEqual(4068, len(actual.cases))
         self.assertEqual('commit', actual.commit)
 
         with io.StringIO() as string:
@@ -998,13 +986,6 @@ class Test(unittest.TestCase):
                 "::error::RuntimeError: Unsupported file format: non-junit.xml",
                 '::error::RuntimeError: Unsupported file format: non-xml.xml',
             ]
-            if Version(sys.version.split(' ')[0]) >= Version('3.10.0') and sys.platform.startswith('darwin'):
-                expected.extend([
-                    '::error::lxml.etree.XMLSyntaxError: Failure to process entity xxe, line 17, column 51',
-                    '::error file=NUnit-sec1752-file.xml::Error processing result file: Failure to process entity xxe, line 17, column 51 (NUnit-sec1752-file.xml, line 17)',
-                    '::error::lxml.etree.XMLSyntaxError: Failure to process entity xxe, line 17, column 51',
-                    '::error file=NUnit-sec1752-https.xml::Error processing result file: Failure to process entity xxe, line 17, column 51 (NUnit-sec1752-https.xml, line 17)',
-                ] * 2)
             self.assertEqual(
                 sorted(expected),
                 sorted([re.sub(r'file=.*[/\\]', 'file=', re.sub(r'[(]file:.*/', '(', re.sub(r'format: .*[/\\]', 'format: ', line)))
