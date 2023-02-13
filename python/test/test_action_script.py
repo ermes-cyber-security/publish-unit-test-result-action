@@ -1009,11 +1009,7 @@ class Test(unittest.TestCase):
                                              **options)
                 actual = parse_files(settings, gha)
 
-                if Version(sys.version.split(' ')[0]) >= Version('3.10.0') and sys.platform.startswith('darwin'):
-                    # on macOS and Python 3.10 and above we see one particular error
-                    self.assertEqual(363, len(actual.suite_details))
-                else:
-                    self.assertEqual(365, len(actual.suite_details))
+                self.assertEqual(365, len(actual.suite_details))
 
     def test_parse_files_no_matches(self):
         gha = mock.MagicMock()
@@ -1136,15 +1132,9 @@ class Test(unittest.TestCase):
                 # Publisher.publish is expected to have been called with these arguments
                 results, cases, conclusion = m.call_args_list[0].args
                 self.assertEqual(140, results.files)
-                if Version(sys.version.split(' ')[0]) >= Version('3.10.0') and sys.platform.startswith('darwin'):
-                    # on macOS and Python 3.10 and above we see one particular error
-                    self.assertEqual(726, results.suites)
-                    self.assertEqual(726, len(results.suite_details))
-                    self.assertEqual(1786, len(cases))
-                else:
-                    self.assertEqual(730, results.suites)
-                    self.assertEqual(730, len(results.suite_details))
-                    self.assertEqual(1786, len(cases))
+                self.assertEqual(730, results.suites)
+                self.assertEqual(730, len(results.suite_details))
+                self.assertEqual(1786, len(cases))
                 self.assertEqual('failure', conclusion)
 
     def test_main_fork_pr_check(self):
